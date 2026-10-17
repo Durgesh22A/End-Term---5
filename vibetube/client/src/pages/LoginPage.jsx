@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import { getAuthErrorMessage } from '../utils/authErrors';
 
 const LoginPage = () => {
   const { login } = useAuth();
@@ -20,7 +21,7 @@ const LoginPage = () => {
       toast.success('Welcome back! 🎵');
       // Navigation handled by App.jsx when user state changes
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Check your credentials.');
+      setError(getAuthErrorMessage(err, 'Login failed. Check your credentials.'));
     } finally {
       setLoading(false);
     }

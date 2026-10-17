@@ -1,11 +1,18 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+const normalizeEmail = (email) => String(email || '').trim().toLowerCase();
+
 /**
  * generateToken — creates a signed JWT and sets it as an HTTP-only cookie.
  * We put this helper here so both register and login share the same logic.
  */
 const generateToken = (res, userId) => {
+  if (!process.env.JWT_SECRET) {
+    const error = new Error('Authentication is temporarily unavailable. Server configuration is incomplete.');
+    error.statusCode = 503;
+    throw error;
+  }
   const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
     expiresIn: '7d',
   });
@@ -25,17 +32,24 @@ const generateToken = (res, userId) => {
 const register = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
+    const normalizedEmail = normalizeEmail(email);
 
-    if (!name || !email || !password) {
+    if (!String(name || '').trim() || !normalizedEmail || !password) {
       return res.status(400).json({ message: 'All fields are required' });
     }
+    if (String(name).trim().length < 2) {
+      return res.status(400).json({ message: 'Name must be at least 2 characters' });
+    }
+    if (String(password).length < 6) {
+      return res.status(400).json({ message: 'Password must be at least 6 characters' });
+    }
 
-    const userExists = await User.findOne({ email });
+    const userExists = await User.findOne({ email: normalizedEmail });
     if (userExists) {
       return res.status(400).json({ message: 'Email already registered' });
     }
 
-    const user = await User.create({ name, email, password });
+    const user = await User.create({ name: String(name).trim(), email: normalizedEmail, password });
 
     const token = generateToken(res, user._id);
 
@@ -60,13 +74,14 @@ const register = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+    const normalizedEmail = normalizeEmail(email);
 
-    if (!email || !password) {
+    if (!normalizedEmail || !password) {
       return res.status(400).json({ message: 'Email and password are required' });
     }
 
     // Must explicitly select password since schema has select: false
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email: normalizedEmail }).select('+password');
 
     if (!user || !(await user.matchPassword(password))) {
       // Generic message — don't tell the attacker which field is wrong

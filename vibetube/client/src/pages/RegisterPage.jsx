@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import { getAuthErrorMessage } from '../utils/authErrors';
 
 const RegisterPage = () => {
   const { register } = useAuth();
@@ -29,7 +30,7 @@ const RegisterPage = () => {
       await register({ name: form.name, email: form.email, password: form.password });
       toast.success('Account created! 🎵 Welcome to VibeTube!');
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed');
+      setError(getAuthErrorMessage(err, 'Registration failed. Please try again.'));
     } finally {
       setLoading(false);
     }
