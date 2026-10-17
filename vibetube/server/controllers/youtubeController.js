@@ -7,6 +7,8 @@ const sendSongList = (res, packed) => {
     results: packed.results,
     isDemo: packed.isDemo,
     fallbackReason: packed.fallbackReason || null,
+    fromCache: Boolean(packed.fromCache),
+    cachedAt: packed.cachedAt || null,
   });
 };
 

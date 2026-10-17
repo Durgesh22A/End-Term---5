@@ -3,11 +3,13 @@ const { getLyrics } = require('./lyricsService');
 
 const YT_API_BASE = 'https://www.googleapis.com/youtube/v3';
 const PLACEHOLDER_KEY = 'your_youtube_data_api_v3_key';
+const SEARCH_CACHE_TTL_MS = 5 * 60 * 1000;
+const searchCache = new Map();
+const searchInFlight = new Map();
 
 /**
- * DEMO DATA — used when YOUTUBE_API_KEY is not set or quota is exhausted.
- * This keeps the UI functional for grading/demos without burning API quota.
- * Each entry is a real YouTube music video ID you can verify.
+ * Demo data is retained for non-search demo surfaces such as trending.
+ * Search never substitutes this catalog for an unrelated query.
  */
 const DEMO_SONGS = [
   { videoId: 'JGwWNGJdvx8', title: 'Shape of You', artist: 'Ed Sheeran', thumbnail: 'https://img.youtube.com/vi/JGwWNGJdvx8/mqdefault.jpg', duration: '3:54', genre: 'Pop' },
@@ -36,6 +38,8 @@ const pack = (results, extra = {}) => ({
   results,
   isDemo: extra.isDemo ?? isDemoMode(),
   fallbackReason: extra.fallbackReason || null,
+  fromCache: Boolean(extra.fromCache),
+  cachedAt: extra.cachedAt || null,
 });
 
 /**
@@ -100,57 +104,65 @@ const mapVideoItem = (item) => ({
  *   - forbidden: key is invalid or doesn't have the API enabled
  * Without this, all of these would show a generic 500 to the user.
  */
-const handleYTError = (error, fallbackResults = null) => {
+const createServiceError = (message, statusCode, code, retryAfter) => {
+  const err = new Error(message);
+  err.statusCode = statusCode;
+  err.code = code;
+  if (retryAfter) err.retryAfter = retryAfter;
+  return err;
+};
+
+const handleYTError = (error) => {
   const ytErr = error.response?.data?.error;
 
   if (ytErr) {
     const reason = ytErr.errors?.[0]?.reason || '';
     if (reason === 'quotaExceeded' || reason === 'dailyLimitExceeded') {
-      console.warn('YouTube API quota exceeded — falling back to demo data');
-      if (fallbackResults !== null) {
-        return pack(fallbackResults, { isDemo: true, fallbackReason: 'quota' });
-      }
-
-      const err = new Error('YouTube API daily quota exceeded. Demo data is showing instead.');
-      err.statusCode = 429;
-      throw err;
+      console.warn('YouTube API quota exceeded');
+      throw createServiceError('YouTube API daily quota has been exhausted. Search is temporarily unavailable.', 429, 'quota_exceeded');
     }
     if (reason === 'keyInvalid' || reason === 'accessNotConfigured') {
-      const err = new Error('YouTube API key is invalid or the YouTube Data API v3 is not enabled.');
-      err.statusCode = 500;
-      throw err;
+      throw createServiceError('YouTube API key is invalid or the YouTube Data API v3 is not enabled.', 502, 'invalid_api_key');
     }
   }
 
   if (error.response?.status === 429) {
-    const err = new Error('YouTube is rate-limiting requests. Please wait before searching again.');
-    err.statusCode = 429;
-    err.retryAfter = error.response.headers?.['retry-after'];
-    throw err;
+    console.warn('YouTube API is rate-limiting requests');
+    throw createServiceError(
+      'YouTube is rate-limiting requests. Please wait before searching again.',
+      429,
+      'rate_limited',
+      error.response.headers?.['retry-after'],
+    );
   }
 
-  if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED') {
-    const err = new Error('Cannot reach YouTube API. Check your internet connection.');
-    err.statusCode = 503;
-    throw err;
+  if (['ENOTFOUND', 'ECONNREFUSED', 'ETIMEDOUT', 'ECONNABORTED'].includes(error.code) || !error.response) {
+    throw createServiceError('Cannot reach YouTube API. Check your internet connection.', 503, 'network_error');
   }
 
   throw error;
 };
 
 const searchVideos = async (query, maxResults = 10) => {
-  if (isDemoMode()) {
-    const q = query.toLowerCase();
-    const filtered = DEMO_SONGS.filter(s =>
-      s.title.toLowerCase().includes(q) ||
-      s.artist.toLowerCase().includes(q) ||
-      (s.genre && s.genre.toLowerCase().includes(q))
-    );
-    const results = (filtered.length ? filtered : DEMO_SONGS).slice(0, maxResults);
-    return pack(results, { isDemo: true, fallbackReason: 'missing_key' });
+  const normalizedQuery = query.trim().toLowerCase();
+  const cacheKey = `${normalizedQuery}:${maxResults}`;
+  const cached = searchCache.get(cacheKey);
+  if (cached && Date.now() - cached.cachedAt < SEARCH_CACHE_TTL_MS) {
+    return pack(cached.results, { isDemo: false, cachedAt: cached.cachedAt });
   }
+  const inFlight = searchInFlight.get(cacheKey);
+  if (inFlight) return inFlight;
 
-  try {
+  const request = (async () => {
+    if (isDemoMode()) {
+    throw createServiceError(
+      'YouTube search is unavailable because YOUTUBE_API_KEY is not configured.',
+      503,
+      'missing_api_key',
+    );
+    }
+
+    try {
     const searchRes = await axios.get(`${YT_API_BASE}/search`, {
       params: {
         part: 'snippet',
@@ -179,9 +191,28 @@ const searchVideos = async (query, maxResults = 10) => {
       embeddable: detailsMap[item.id.videoId]?.status?.embeddable,
     })).filter(s => s.videoId && s.embeddable !== false);
 
-    return pack(results, { isDemo: false });
-  } catch (error) {
-    return handleYTError(error, DEMO_SONGS.slice(0, maxResults));
+    const cachedAt = Date.now();
+    searchCache.set(cacheKey, { results, cachedAt });
+    return pack(results, { isDemo: false, cachedAt });
+    } catch (error) {
+      const stale = searchCache.get(cacheKey);
+      if (stale) {
+        return pack(stale.results, {
+          isDemo: false,
+          fallbackReason: error.response?.status === 429 ? 'rate_limit' : 'stale_cache',
+          fromCache: true,
+          cachedAt: stale.cachedAt,
+        });
+      }
+      return handleYTError(error);
+    }
+  })();
+
+  searchInFlight.set(cacheKey, request);
+  try {
+    return await request;
+  } finally {
+    if (searchInFlight.get(cacheKey) === request) searchInFlight.delete(cacheKey);
   }
 };
 
@@ -237,11 +268,11 @@ const getVideoDetails = async (videoId) => {
 
 const searchByArtist = async (artistName, maxResults = 10) => {
   if (isDemoMode()) {
-    const filtered = DEMO_SONGS.filter(s =>
-      s.artist.toLowerCase().includes(artistName.toLowerCase())
+    throw createServiceError(
+      'YouTube artist search is unavailable because YOUTUBE_API_KEY is not configured.',
+      503,
+      'missing_api_key',
     );
-    const results = (filtered.length ? filtered : DEMO_SONGS).slice(0, maxResults);
-    return pack(results, { isDemo: true, fallbackReason: 'missing_key' });
   }
 
   return searchVideos(`${artistName} songs`, maxResults);

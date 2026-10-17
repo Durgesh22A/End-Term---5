@@ -43,7 +43,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const trimmedQuery = query.trim();
-    if (!showSearchDropdown || !trimmedQuery) {
+    if (!showSearchDropdown || trimmedQuery.length < 2) {
       abortRef.current?.abort();
       setSuggestions([]);
       setSuggestionState('idle');

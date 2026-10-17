@@ -13,6 +13,7 @@ const SearchPage = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [isDemo, setIsDemo] = useState(false);
   const [fallbackReason, setFallbackReason] = useState(null);
+  const [fromCache, setFromCache] = useState(false);
   const [localQuery, setLocalQuery] = useState(searchParams.get('q') || '');
   const requestIdRef = useRef(0);
   const abortRef = useRef(null);
@@ -27,6 +28,7 @@ const SearchPage = () => {
       setHasSearched(false);
       setIsDemo(false);
       setFallbackReason(null);
+      setFromCache(false);
       return;
     }
 
@@ -42,6 +44,7 @@ const SearchPage = () => {
         setResults(cached.results);
         setIsDemo(cached.isDemo);
         setFallbackReason(cached.fallbackReason);
+        setFromCache(Boolean(cached.fromCache));
         setHasSearched(true);
         setLoading(false);
         return;
@@ -59,10 +62,12 @@ const SearchPage = () => {
             results: items,
             isDemo: false,
             fallbackReason: null,
+            fromCache: false,
           });
           setResults(items);
           setIsDemo(false);
           setFallbackReason(null);
+          setFromCache(false);
           setHasSearched(true);
         } else {
           const { data } = await youtubeAPI.search(q, 20, controller.signal);
@@ -79,10 +84,12 @@ const SearchPage = () => {
             results: uniqueResults,
             isDemo: Boolean(data.isDemo),
             fallbackReason: data.fallbackReason || null,
+            fromCache: Boolean(data.fromCache),
           });
           setResults(uniqueResults);
           setIsDemo(Boolean(data.isDemo));
           setFallbackReason(data.fallbackReason || null);
+          setFromCache(Boolean(data.fromCache));
           setHasSearched(true);
         }
       } catch (err) {
@@ -98,7 +105,7 @@ const SearchPage = () => {
           setError(msg || 'Cannot reach music service. Check your internet connection.');
         } else if (status === 400) {
           setError(msg || 'Enter a search term.');
-        } else if (status === 500) {
+        } else if (status === 500 || status === 502) {
           setError(msg || 'Search failed. The API service may be unavailable.');
         } else {
           setError(msg || 'Search failed. Try again.');
@@ -130,9 +137,7 @@ const SearchPage = () => {
 
   const suggestions = ['Pop hits', 'Hip Hop', 'Rock classics', 'Ed Sheeran', 'Taylor Swift', 'Bollywood', 'Lo-fi', 'Electronic'];
 
-  const demoMessage = fallbackReason === 'quota'
-    ? 'YouTube quota is used up for today — showing labelled demo songs instead.'
-    : 'Running with curated sample songs. Add YOUTUBE_API_KEY to server/.env for live YouTube results.';
+  const demoMessage = 'Running with curated sample songs. Add YOUTUBE_API_KEY to server/.env for live YouTube results.';
 
   return (
     <div>
@@ -179,8 +184,20 @@ const SearchPage = () => {
         <div className="demo-banner">
           <AlertTriangle size={16} />
           <span>
-            <strong>{fallbackReason === 'quota' ? 'Quota fallback' : 'Demo Mode'}</strong> — {demoMessage}
+            <strong>
+              {fallbackReason === 'quota'
+                ? 'Quota fallback'
+                : fallbackReason === 'rate_limit'
+                  ? 'Rate-limit fallback'
+                  : 'Demo Mode'}
+            </strong> — {demoMessage}
           </span>
+        </div>
+      )}
+      {fromCache && (
+        <div className="demo-banner">
+          <AlertTriangle size={16} />
+          <span><strong>Cached results</strong> — YouTube is temporarily unavailable; these results may be stale.</span>
         </div>
       )}
 
