@@ -19,9 +19,9 @@ const SettingsPage = () => {
       </div>
 
       <section className="settings-card settings-profile">
-        <div className="settings-avatar">{getInitials(user?.name || 'Vibe User')}</div>
+        <div className="settings-avatar">{getInitials(user?.name || 'RIFFORA User')}</div>
         <div>
-          <h2>{user?.name || 'VibeTube listener'}</h2>
+          <h2>{user?.name || 'RIFFORA listener'}</h2>
           <p>{user?.email || 'Signed-in account'}</p>
           {user?.subscription === 'premium' && <span className="status-pill">Premium</span>}
         </div>

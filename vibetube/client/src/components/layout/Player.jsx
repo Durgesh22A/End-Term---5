@@ -24,10 +24,11 @@ const Player = () => {
     showDetails, deviceStatus,
     playerError,
     failedSongId,
+    needsPlaybackResume,
     togglePlay, playNext, playPrev, seekTo,
     setVolumeLevel, toggleMute,
     setShowQueue, setIsLooping, setIsShuffled,
-    toggleAutoplay, setShowDetails, chooseAudioDevice,
+    toggleAutoplay, setShowDetails, chooseAudioDevice, resumePlayback,
   } = usePlayer();
 
   useEffect(() => {
@@ -165,6 +166,12 @@ const Player = () => {
             <div className="player-error" role="status">
               <span>{playerError}</span>
               {failedSongId === currentSong?.videoId && <button type="button" onClick={playNext}>Try next track</button>}
+            </div>
+          )}
+          {needsPlaybackResume && currentSong && !playerError && (
+            <div className="player-resume" role="status">
+              <span>Playback was restored at {formatTime(currentTime)}. Your browser needs a confirmation to continue.</span>
+              <button type="button" onClick={resumePlayback}>Resume playback</button>
             </div>
           )}
         </div>

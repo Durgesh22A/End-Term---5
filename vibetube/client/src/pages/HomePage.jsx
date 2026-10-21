@@ -139,7 +139,7 @@ const HomePage = () => {
       {!recommendations.length && !recentlyPlayed.length && (
         <section className="new-listener-card">
           <Headphones size={28} />
-          <div><h2>Your daily mix is waiting</h2><p>Play a few songs or like an artist and VibeTube will shape recommendations around you.</p></div>
+          <div><h2>Your daily mix is waiting</h2><p>Play a few songs or like an artist and RIFFORA will shape recommendations around you.</p></div>
           <Link to="/search" className="btn btn-primary">Start discovering</Link>
         </section>
       )}

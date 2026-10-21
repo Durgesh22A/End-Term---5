@@ -1,41 +1,18 @@
-import { NavLink, useNavigate } from 'react-router-dom';
-import { Home, Search, Library, Heart, Clock, Plus, Music4, ListMusic, Download, Settings } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { playlistAPI } from '../../api';
-import { useAuth } from '../../context/AuthContext';
-import { usePlayer } from '../../context/PlayerContext';
-import CreatePlaylistModal from '../music/CreatePlaylistModal';
+import { NavLink } from 'react-router-dom';
+import { Home, Search, Library, Heart, Clock, ListMusic, Download, Settings } from 'lucide-react';
 
 const Sidebar = () => {
-  const { isAuthenticated } = useAuth();
-  const { playSong } = usePlayer();
-  const [playlists, setPlaylists] = useState([]);
-  const [showCreate, setShowCreate] = useState(false);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      playlistAPI.getAll()
-        .then(({ data }) => setPlaylists(data.playlists || []))
-        .catch(() => {});
-    }
-  }, [isAuthenticated]);
-
-  const handlePlaylistCreated = (playlist) => {
-    setPlaylists(prev => [playlist, ...prev]);
-    navigate(`/playlist/${playlist._id}`);
-  };
-
   return (
     <>
       <aside className="sidebar">
         {/* Logo */}
-        <div className="sidebar-logo">
-          <div className="logo-icon">
-            <Music4 size={20} />
-          </div>
-          <h1>VibeTube</h1>
-        </div>
+        <NavLink to="/" className="sidebar-logo" aria-label="RIFFORA home" end>
+          <img className="brand-mark" src="/riffora-mark.svg" alt="" />
+          <span className="brand-lockup">
+            <strong>RIFFORA</strong>
+            <small>Find Your Frequency.</small>
+          </span>
+        </NavLink>
 
         {/* Navigation */}
         <nav className="sidebar-nav">
@@ -66,46 +43,17 @@ const Sidebar = () => {
             <Download size={20} />
             Downloads
           </NavLink>
+          <NavLink to="/playlists" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+            <ListMusic size={20} />
+            Playlists
+          </NavLink>
+        </nav>
+
+        <div className="sidebar-settings">
           <NavLink to="/settings" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
             <Settings size={20} />
             Settings
           </NavLink>
-        </nav>
-
-        {/* Playlists section */}
-        <div className="sidebar-playlists">
-          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom: 8 }}>
-            <span style={{ fontSize:'0.75rem', fontWeight:600, color:'var(--text-muted)', textTransform:'uppercase', letterSpacing:'0.08em' }}>
-              Playlists
-            </span>
-            <button
-              className="btn-icon"
-              onClick={() => setShowCreate(true)}
-              title="Create playlist"
-              style={{ width: 24, height: 24 }}
-            >
-              <Plus size={16} />
-            </button>
-          </div>
-
-          {playlists.length === 0 && (
-            <p style={{ fontSize:'0.78rem', color:'var(--text-muted)', padding:'4px 8px' }}>
-              No playlists yet
-            </p>
-          )}
-
-          {playlists.map(pl => (
-            <NavLink
-              key={pl._id}
-              to={`/playlist/${pl._id}`}
-              className="sidebar-playlist-item"
-            >
-              <ListMusic size={14} style={{ flexShrink:0 }} />
-              <span style={{ overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis' }}>
-                {pl.name}
-              </span>
-            </NavLink>
-          ))}
         </div>
       </aside>
       <nav className="mobile-nav" aria-label="Mobile navigation">
@@ -126,12 +74,6 @@ const Sidebar = () => {
         </NavLink>
       </nav>
 
-      {showCreate && (
-        <CreatePlaylistModal
-          onClose={() => setShowCreate(false)}
-          onCreated={handlePlaylistCreated}
-        />
-      )}
     </>
   );
 };

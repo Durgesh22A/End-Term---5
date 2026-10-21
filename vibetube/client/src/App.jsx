@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { PlayerProvider } from './context/PlayerContext';
@@ -28,12 +29,31 @@ import NotFoundPage from './pages/NotFoundPage';
  */
 const AppShell = () => {
   const { isAuthenticated, loading } = useAuth();
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    const pageTitles = {
+      '/': 'Home',
+      '/search': 'Search',
+      '/library': 'Your Library',
+      '/playlists': 'Playlists',
+      '/liked': 'Liked Songs',
+      '/history': 'Recently Played',
+      '/downloads': 'Downloads',
+      '/settings': 'Settings',
+      '/login': 'Sign in',
+      '/register': 'Create account',
+    };
+    const pageTitle = pageTitles[pathname] || (pathname.startsWith('/playlist/') ? 'Playlist' : pathname.startsWith('/artist/') ? 'Artist' : pathname.startsWith('/album/') ? 'Album' : 'RIFFORA');
+    document.title = pageTitle === 'RIFFORA' ? 'RIFFORA — Find Your Frequency' : `${pageTitle} — RIFFORA`;
+  }, [pathname]);
 
   if (loading) {
     return (
-      <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh', flexDirection:'column', gap:16 }}>
-      <div style={{ fontSize:32, fontFamily:'var(--font-heading)', fontWeight:800, background:'var(--accent-gradient)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>
-          VibeTube
+      <div className="app-loading" aria-label="Loading RIFFORA">
+        <div className="app-loading-brand">
+          <img src="/riffora-mark.svg" alt="" />
+          <span>RIFFORA</span>
         </div>
         <div className="spinner" />
       </div>
@@ -60,6 +80,7 @@ const AppShell = () => {
                   <Route path="/" element={<HomePage />} />
                   <Route path="/search" element={<SearchPage />} />
                   <Route path="/library" element={<LibraryPage />} />
+                  <Route path="/playlists" element={<LibraryPage />} />
                   <Route path="/liked" element={<LikedSongsPage />} />
                   <Route path="/history" element={<HistoryPage />} />
                   <Route path="/downloads" element={<DownloadsPage />} />

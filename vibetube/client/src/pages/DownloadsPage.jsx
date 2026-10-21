@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { deleteDownload, getStorageEstimate, importAudioFile, listDownloads } from '../utils/downloadStore';
 import { usePlayer } from '../context/PlayerContext';
 import Artwork from '../components/music/Artwork';
+import { useNavigate } from 'react-router-dom';
 
 const formatBytes = (bytes) => {
   if (!bytes) return '0 B';
@@ -14,6 +15,7 @@ const formatBytes = (bytes) => {
 
 const DownloadsPage = () => {
   const { currentSong, isPlaying, playSong, togglePlay } = usePlayer();
+  const navigate = useNavigate();
   const [downloads, setDownloads] = useState([]);
   const [storage, setStorage] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -88,8 +90,11 @@ const DownloadsPage = () => {
       {!downloads.length ? (
         <div className="empty-state download-empty">
           <Download size={48} />
-          <h3>No offline songs yet</h3>
+          <h3>No downloads yet</h3>
           <p>Only songs with an authorized downloadable audio source can be saved here.</p>
+          <button className="btn btn-primary" type="button" onClick={() => navigate('/search?filter=downloadable')}>
+            <Download size={16} /> Explore Downloadable Songs
+          </button>
         </div>
       ) : (
         <div className="downloads-list">

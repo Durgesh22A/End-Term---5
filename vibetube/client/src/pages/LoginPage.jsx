@@ -31,8 +31,9 @@ const LoginPage = () => {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-logo">
-          <h1>VibeTube</h1>
-          <p>Your music, your vibe.</p>
+          <img className="auth-brand-mark" src="/riffora-mark.svg" alt="" />
+          <h1>RIFFORA</h1>
+          <p>Find Your Frequency.</p>
         </div>
 
         <h2 style={{ fontSize:'1.3rem', marginBottom:24, textAlign:'center' }}>Welcome back</h2>

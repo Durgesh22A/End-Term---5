@@ -21,6 +21,10 @@ const likeSong = async (req, res, next) => {
     const { videoId } = req.params;
     const { title, thumbnail, artist, duration } = req.body;
 
+    if (typeof videoId !== 'string' || !videoId.trim() || typeof title !== 'string' || !title.trim()) {
+      return res.status(400).json({ message: 'videoId and title are required' });
+    }
+
     const user = await User.findById(req.user._id);
 
     // Prevent duplicates
@@ -29,7 +33,13 @@ const likeSong = async (req, res, next) => {
       return res.status(400).json({ message: 'Song already liked' });
     }
 
-    user.likedSongs.push({ videoId, title, thumbnail: preferArtwork('', thumbnail, videoId), artist, duration });
+    user.likedSongs.push({
+      videoId: videoId.trim(),
+      title: title.trim(),
+      thumbnail: preferArtwork('', typeof thumbnail === 'string' ? thumbnail : '', videoId),
+      artist: typeof artist === 'string' ? artist.trim() : 'Unknown artist',
+      duration: typeof duration === 'string' ? duration.trim() : '',
+    });
     await user.save();
 
     res.status(201).json({ success: true, message: 'Song liked' });

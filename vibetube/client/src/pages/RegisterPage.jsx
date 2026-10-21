@@ -28,7 +28,7 @@ const RegisterPage = () => {
     setLoading(true);
     try {
       await register({ name: form.name, email: form.email, password: form.password });
-      toast.success('Account created! 🎵 Welcome to VibeTube!');
+      toast.success('Account created! Welcome to RIFFORA.');
     } catch (err) {
       setError(getAuthErrorMessage(err, 'Registration failed. Please try again.'));
     } finally {
@@ -40,8 +40,9 @@ const RegisterPage = () => {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-logo">
-          <h1>VibeTube</h1>
-          <p>Join millions of music lovers.</p>
+          <img className="auth-brand-mark" src="/riffora-mark.svg" alt="" />
+          <h1>RIFFORA</h1>
+          <p>Find Your Frequency.</p>
         </div>
 
         <h2 style={{ fontSize:'1.3rem', marginBottom:24, textAlign:'center' }}>Create your account</h2>

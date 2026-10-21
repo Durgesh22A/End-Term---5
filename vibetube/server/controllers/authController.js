@@ -51,11 +51,10 @@ const register = async (req, res, next) => {
 
     const user = await User.create({ name: String(name).trim(), email: normalizedEmail, password });
 
-    const token = generateToken(res, user._id);
+    generateToken(res, user._id);
 
     res.status(201).json({
       success: true,
-      token,
       user: {
         _id: user._id,
         name: user.name,
@@ -88,11 +87,10 @@ const login = async (req, res, next) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    const token = generateToken(res, user._id);
+    generateToken(res, user._id);
 
     res.json({
       success: true,
-      token,
       user: {
         _id: user._id,
         name: user.name,

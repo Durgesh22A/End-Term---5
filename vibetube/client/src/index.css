@@ -1,5 +1,5 @@
 /* ============================================================
-   VibeTube — Global Design System
+   RIFFORA — Global Design System
    Google Fonts: Inter (body) + Space Grotesk (headings) + JetBrains Mono (data)
    Color palette: True Void + Fresh Green
    ============================================================ */
@@ -9,27 +9,28 @@
 /* ── CSS Custom Properties (Design Tokens) ─────────────────── */
 :root {
   /* Colors */
-  --bg-primary:     #030304;
-  --bg-secondary:   #0f1115;
-  --bg-tertiary:    #151922;
-  --bg-card:        #0f1115;
-  --bg-hover:       #171c25;
-  --bg-elevated:    #1a202b;
+  --bg-primary:     #090b0d;
+  --bg-secondary:   #111518;
+  --bg-tertiary:    #171d20;
+  --bg-card:        #111518;
+  --bg-hover:       #1c2425;
+  --bg-elevated:    #20292a;
 
-  --accent-primary:   #1ed760;
-  --accent-secondary: #1db954;
-  --accent-gradient:  linear-gradient(135deg, #1db954, #1ed760);
-  --accent-glow:      0 0 24px rgba(30, 215, 96, 0.28);
+  --accent-primary:   #25c982;
+  --accent-secondary: #189b62;
+  --accent-highlight: #8bf2b7;
+  --accent-gradient:  linear-gradient(135deg, #189b62, #8bf2b7);
+  --accent-glow:      0 0 24px rgba(37, 201, 130, 0.24);
 
   --text-primary:   #ffffff;
-  --text-secondary: #94a3b8;
-  --text-muted:     #64748b;
-  --text-accent:    #1ed760;
+  --text-secondary: #b1b9b9;
+  --text-muted:     #788282;
+  --text-accent:    #8bf2b7;
 
   --border-color:   rgba(255, 255, 255, 0.1);
-  --border-hover:   rgba(30, 215, 96, 0.5);
+  --border-hover:   rgba(139, 242, 183, 0.48);
 
-  --success: #1ed760;
+  --success: #25c982;
   --warning: #fbbf24;
   --error:   #ef4444;
 
@@ -75,10 +76,10 @@ body {
   font-family: var(--font-body);
   background-color: var(--bg-primary);
   background-image:
-    linear-gradient(rgba(30, 215, 96, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(30, 215, 96, 0.025) 1px, transparent 1px),
-    radial-gradient(circle at 15% 10%, rgba(29, 185, 84, 0.12), transparent 32rem),
-    radial-gradient(circle at 85% 85%, rgba(30, 215, 96, 0.08), transparent 28rem);
+    linear-gradient(rgba(139, 242, 183, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 242, 183, 0.018) 1px, transparent 1px),
+    radial-gradient(circle at 15% 10%, rgba(37, 201, 130, 0.1), transparent 32rem),
+    radial-gradient(circle at 85% 85%, rgba(139, 242, 183, 0.06), transparent 28rem);
   background-size: 48px 48px, 48px 48px, auto, auto;
   color: var(--text-primary);
   line-height: 1.6;
@@ -526,31 +527,27 @@ img { max-width: 100%; display: block; }
   z-index: 10;
 }
 .sidebar-logo {
-  padding: 20px 20px 8px;
-  display: flex;
   align-items: center;
-  gap: 10px;
-}
-.sidebar-logo .logo-icon {
-  width: 36px;
-  height: 36px;
-  background: var(--accent-gradient);
-  border-radius: var(--radius-md);
   display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 18px;
-  flex-shrink: 0;
+  gap: 11px;
+  padding: 20px 20px 12px;
 }
-.sidebar-logo h1 {
-  font-family: var(--font-heading);
-  font-size: 1.2rem;
-  font-weight: 800;
-  background: var(--accent-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.brand-mark {
+  flex: 0 0 38px;
+  height: 38px;
+  width: 38px;
+}
+.brand-lockup { display: grid; gap: 1px; min-width: 0; }
+.brand-lockup strong {
+  color: var(--text-primary);
+  font: 800 1.08rem/1 var(--font-heading);
+  letter-spacing: 0.12em;
+}
+.brand-lockup small {
+  color: var(--accent-highlight);
+  font: 500 0.62rem/1.25 var(--font-body);
+  letter-spacing: 0.015em;
+  white-space: nowrap;
 }
 .sidebar-nav {
   flex: 1;
@@ -608,6 +605,9 @@ img { max-width: 100%; display: block; }
 .sidebar-playlist-item:hover {
   color: var(--text-primary);
   background: var(--bg-hover);
+}
+.sidebar-settings {
+  padding: 0 12px 12px;
 }
 
 /* ── Navbar ──────────────────────────────────────────────────── */
@@ -959,6 +959,7 @@ img { max-width: 100%; display: block; }
   text-align: center;
   margin-bottom: 28px;
 }
+.auth-brand-mark { width: 48px; height: 48px; margin: 0 auto 12px; }
 .auth-card .auth-logo h1 {
   font-size: 2rem;
   font-weight: 800;
@@ -1009,6 +1010,17 @@ img { max-width: 100%; display: block; }
   border-radius: var(--radius-full);
   animation: spin 0.7s linear infinite;
 }
+.app-loading {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100vh;
+  justify-content: center;
+}
+.app-loading-brand { align-items: center; display: flex; gap: 10px; }
+.app-loading-brand img { height: 36px; width: 36px; }
+.app-loading-brand span { color: var(--text-primary); font: 800 1.35rem/1 var(--font-heading); letter-spacing: .14em; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .page-loader {
@@ -1291,6 +1303,8 @@ img { max-width: 100%; display: block; }
   backdrop-filter: blur(18px);
   animation: slideUp 0.16s ease;
 }
+.search-page-form { z-index: 20; }
+.search-page-form .search-suggestions { min-width: 0; z-index: 25; }
 .search-suggestions-state {
   display: flex;
   align-items: center;
@@ -1877,6 +1891,32 @@ img { max-width: 100%; display: block; }
 .danger-icon { color: var(--error); }
 .download-empty { min-height: 40vh; }
 
+.player-resume {
+  align-items: center;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  display: flex;
+  font-size: 0.75rem;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 7px;
+  padding: 5px 8px;
+}
+
+.player-resume button {
+  background: var(--accent-primary);
+  border: 0;
+  border-radius: var(--radius-full);
+  color: white;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  padding: 4px 9px;
+  white-space: nowrap;
+}
+
 /* ── Premium home rails ─────────────────────────────────────── */
 .home-page { max-width: 1500px; margin: 0 auto; }
 .compact-banner { margin-bottom: 18px; }
@@ -2311,6 +2351,50 @@ img { max-width: 100%; display: block; }
 .not-found-mark { display: grid; place-items: center; width: 76px; height: 76px; border-radius: 24px; color: var(--accent-primary); background: rgba(30,215,96,0.12); }
 .not-found-page h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
 .not-found-page p { max-width: 460px; color: var(--text-secondary); }
+
+/* ── RIFFORA visual identity refinements ───────────────────── */
+.sidebar {
+  background: rgba(17, 21, 24, .94);
+  border-right-color: rgba(139, 242, 183, .12);
+}
+.sidebar-logo { padding: 22px 20px 18px; }
+.sidebar-logo:hover .brand-lockup strong { color: var(--accent-highlight); }
+.navbar {
+  background: rgba(9, 11, 13, .86);
+  border-bottom-color: rgba(139, 242, 183, .1);
+}
+.nav-item.active {
+  background: linear-gradient(90deg, rgba(37, 201, 130, .16), rgba(37, 201, 130, .03));
+  box-shadow: inset 2px 0 0 var(--accent-highlight);
+  color: var(--accent-highlight);
+}
+.nav-item:hover { background: rgba(139, 242, 183, .055); }
+.input:focus {
+  border-color: var(--accent-highlight);
+  box-shadow: 0 0 0 3px rgba(139, 242, 183, .12);
+}
+.btn-primary {
+  background: var(--accent-primary);
+  box-shadow: 0 8px 18px rgba(37, 201, 130, .16);
+  color: #06110a;
+}
+.btn-primary:hover { background: var(--accent-highlight); box-shadow: 0 10px 22px rgba(139, 242, 183, .2); }
+.player { border-top-color: rgba(139, 242, 183, .12); }
+.auth-page {
+  background:
+    radial-gradient(ellipse at top left, rgba(37, 201, 130, .14) 0%, transparent 48%),
+    radial-gradient(ellipse at bottom right, rgba(139, 242, 183, .08) 0%, transparent 46%),
+    var(--bg-primary);
+}
+.auth-card { border-color: rgba(139, 242, 183, .14); }
+.auth-card .auth-logo h1 {
+  background: none;
+  color: var(--text-primary);
+  -webkit-text-fill-color: currentColor;
+  letter-spacing: .12em;
+}
+.mobile-nav { background: rgba(17, 21, 24, .98); border-top-color: rgba(139, 242, 183, .1); }
+.mobile-nav-item.active { background: rgba(37, 201, 130, .13); color: var(--accent-highlight); }
 @media (max-width: 650px) {
   .detail-hero { align-items: center; flex-direction: column; text-align: center; margin: -16px -16px 24px; padding: 24px 16px; }
   .detail-avatar { width: 112px; height: 112px; }
