@@ -3,6 +3,13 @@ const User = require('../models/User');
 
 const normalizeEmail = (email) => String(email || '').trim().toLowerCase();
 
+const authCookieOptions = () => ({
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  // Vercel (client) and Render (API) are different origins in production.
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+});
+
 /**
  * generateToken — creates a signed JWT and sets it as an HTTP-only cookie.
  * We put this helper here so both register and login share the same logic.
@@ -18,9 +25,7 @@ const generateToken = (res, userId) => {
   });
 
   res.cookie('riffora_token', token, {
-    httpOnly: true,   // Not accessible via document.cookie — blocks XSS
-    secure: process.env.NODE_ENV === 'production', // HTTPS only in prod
-    sameSite: 'strict', // Blocks CSRF from other origins
+    ...authCookieOptions(),
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
   });
 
@@ -109,8 +114,8 @@ const login = async (req, res, next) => {
 // @access Private
 const logout = (req, res) => {
   // Clear the cookie — browser deletes it
-  res.cookie('riffora_token', '', { httpOnly: true, expires: new Date(0) });
-  res.cookie('vibetube_token', '', { httpOnly: true, expires: new Date(0) });
+  res.cookie('riffora_token', '', { ...authCookieOptions(), expires: new Date(0) });
+  res.cookie('vibetube_token', '', { ...authCookieOptions(), expires: new Date(0) });
   res.json({ success: true, message: 'Logged out successfully' });
 };
 

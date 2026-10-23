@@ -3,10 +3,11 @@ import axios from 'axios';
 /**
  * Single Axios instance for the whole app.
  * withCredentials: true → sends HTTP-only cookies with every request (required for auth).
- * baseURL proxied through Vite in dev, pointed at prod server in production.
+ * baseURL proxied through Vite in dev, pointed at Render through VITE_API_URL
+ * in production.
  */
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_URL || '/api',
   withCredentials: true,
   headers: { 'Content-Type': 'application/json' },
 });
