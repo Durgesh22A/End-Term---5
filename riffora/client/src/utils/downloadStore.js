@@ -122,7 +122,7 @@ export const downloadSong = async (song, onProgress, signal) => {
     size: blob.size,
   };
   await runTransaction('readwrite', store => store.put(record));
-  window.dispatchEvent(new CustomEvent('vibetube-downloads-changed'));
+  window.dispatchEvent(new CustomEvent('riffora-downloads-changed'));
   return record;
 };
 
@@ -144,6 +144,6 @@ export const importAudioFile = async (file, metadata = {}) => {
     sourceType: 'user-owned',
   };
   await runTransaction('readwrite', store => store.put(record));
-  window.dispatchEvent(new CustomEvent('vibetube-downloads-changed'));
+  window.dispatchEvent(new CustomEvent('riffora-downloads-changed'));
   return record;
 };

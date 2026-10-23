@@ -17,7 +17,7 @@ const generateToken = (res, userId) => {
     expiresIn: '7d',
   });
 
-  res.cookie('vibetube_token', token, {
+  res.cookie('riffora_token', token, {
     httpOnly: true,   // Not accessible via document.cookie — blocks XSS
     secure: process.env.NODE_ENV === 'production', // HTTPS only in prod
     sameSite: 'strict', // Blocks CSRF from other origins
@@ -109,6 +109,7 @@ const login = async (req, res, next) => {
 // @access Private
 const logout = (req, res) => {
   // Clear the cookie — browser deletes it
+  res.cookie('riffora_token', '', { httpOnly: true, expires: new Date(0) });
   res.cookie('vibetube_token', '', { httpOnly: true, expires: new Date(0) });
   res.json({ success: true, message: 'Logged out successfully' });
 };

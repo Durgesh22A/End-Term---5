@@ -63,7 +63,7 @@ MongoDB for user, playlist, and listening-history data
 ## Project folder structure
 
 ```text
-vibetube/
+riffora/
 ├─ client/
 │  ├─ public/                 # Static client assets
 │  ├─ src/
@@ -97,7 +97,7 @@ vibetube/
 
 ## Installation
 
-Run the following from the `vibetube` directory. The repository has separate client and server packages; there is no runnable root package script.
+Run the following from the `riffora` directory. The repository has separate client and server packages; there is no runnable root package script.
 
 ```powershell
 cd server
@@ -122,11 +122,11 @@ Set these variables in `server/.env`. Values below are deliberately not included
 | `YOUTUBE_API_KEY` | Yes for live YouTube search | YouTube Data API v3 credential used by the discovery service. |
 | `NODE_ENV` | No | Set to `production` on a secure deployment so authentication cookies use production security settings. |
 
-`VIBETUBE_TEST_URL` is optional and is only used by the server regression tests to target an API URL other than `http://localhost:5000`.
+`RIFFORA_TEST_URL` is optional and is only used by the server regression tests to target an API URL other than `http://localhost:5000`.
 
 ## Running the frontend
 
-In one terminal, from `vibetube/client`:
+In one terminal, from `riffora/client`:
 
 ```powershell
 npm run dev
@@ -136,7 +136,7 @@ Vite serves the client on `http://localhost:5173` and proxies `/api` requests to
 
 ## Running the backend
 
-In a second terminal, from `vibetube/server`:
+In a second terminal, from `riffora/server`:
 
 ```powershell
 npm run dev
@@ -179,7 +179,7 @@ cd server
 npm run test:regression
 ```
 
-To point that suite at another running API, set `VIBETUBE_TEST_URL` before the command.
+To point that suite at another running API, set `RIFFORA_TEST_URL` before the command.
 
 The client includes focused Node playback utility tests that can be run from `client`:
 
@@ -189,7 +189,7 @@ node --test .\src\utils\playbackSource.test.mjs .\src\utils\playbackSession.test
 
 ## Production build
 
-Build the frontend from `vibetube/client`:
+Build the frontend from `riffora/client`:
 
 ```powershell
 npm run build

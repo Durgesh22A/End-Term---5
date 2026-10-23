@@ -35,8 +35,8 @@ const DownloadsPage = () => {
 
   useEffect(() => {
     refresh();
-    window.addEventListener('vibetube-downloads-changed', refresh);
-    return () => window.removeEventListener('vibetube-downloads-changed', refresh);
+    window.addEventListener('riffora-downloads-changed', refresh);
+    return () => window.removeEventListener('riffora-downloads-changed', refresh);
   }, []);
 
   const remove = async (song) => {

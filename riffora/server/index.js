@@ -60,7 +60,7 @@ app.use(errorHandler);
 // ── Start Server ─────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`🚀 VibeTube server running on http://localhost:${PORT}`);
+  console.log(`🚀 RIFFORA server running on http://localhost:${PORT}`);
   console.log(`📺 Mode: ${process.env.NODE_ENV || 'development'}`);
   if (!process.env.YOUTUBE_API_KEY || process.env.YOUTUBE_API_KEY === 'your_youtube_data_api_v3_key') {
     console.log('⚠️  No YouTube API key — running in DEMO MODE with curated songs');

@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const baseUrl = process.env.VIBETUBE_TEST_URL || 'http://localhost:5000';
+const baseUrl = process.env.RIFFORA_TEST_URL || process.env.VIBETUBE_TEST_URL || 'http://localhost:5000';
 
 const request = async (path, options = {}) => {
   const response = await fetch(`${baseUrl}${path}`, {

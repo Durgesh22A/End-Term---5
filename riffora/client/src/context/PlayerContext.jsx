@@ -6,13 +6,21 @@ import { parseDurationToSeconds } from '../utils/formatters';
 import { isDirectAudioSong } from '../utils/playbackSource.mjs';
 import { SESSION_RESTORE_TTL_MS, shouldAutoResume } from '../utils/playbackSession.mjs';
 
-const STORAGE_KEY = 'vibetube-playback';
-const SESSION_RESTORE_KEY = 'vibetube-playback-reload';
+const STORAGE_KEY = 'riffora-playback';
+const LEGACY_STORAGE_KEY = 'vibetube-playback';
+const SESSION_RESTORE_KEY = 'riffora-playback-reload';
+const LEGACY_SESSION_RESTORE_KEY = 'vibetube-playback-reload';
+const AUTOPLAY_KEY = 'riffora-autoplay';
+const LEGACY_AUTOPLAY_KEY = 'vibetube-autoplay';
 const PlayerContext = createContext(null);
 
 const readPlayback = () => {
   try {
-    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    const storedValue = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY) || '{}';
+    const stored = JSON.parse(storedValue);
+    if (!localStorage.getItem(STORAGE_KEY) && localStorage.getItem(LEGACY_STORAGE_KEY)) {
+      localStorage.setItem(STORAGE_KEY, storedValue);
+    }
     return stored && typeof stored === 'object' ? stored : {};
   } catch {
     return {};
@@ -21,7 +29,8 @@ const readPlayback = () => {
 
 const readReloadMarker = () => {
   try {
-    const marker = JSON.parse(sessionStorage.getItem(SESSION_RESTORE_KEY) || 'null');
+    const storedValue = sessionStorage.getItem(SESSION_RESTORE_KEY) || sessionStorage.getItem(LEGACY_SESSION_RESTORE_KEY) || 'null';
+    const marker = JSON.parse(storedValue);
     return marker && typeof marker === 'object' ? marker : null;
   } catch {
     return null;
@@ -91,7 +100,13 @@ export const PlayerProvider = ({ children }) => {
   const [showQueue, setShowQueue] = useState(false);
   const [isLooping, setIsLooping] = useState(Boolean(savedPlayback.isLooping));
   const [isShuffled, setIsShuffled] = useState(Boolean(savedPlayback.isShuffled));
-  const [isAutoplay, setIsAutoplay] = useState(() => localStorage.getItem('vibetube-autoplay') !== 'false');
+  const [isAutoplay, setIsAutoplay] = useState(() => {
+    const storedValue = localStorage.getItem(AUTOPLAY_KEY) || localStorage.getItem(LEGACY_AUTOPLAY_KEY);
+    if (!localStorage.getItem(AUTOPLAY_KEY) && storedValue !== null) {
+      localStorage.setItem(AUTOPLAY_KEY, storedValue);
+    }
+    return storedValue !== 'false';
+  });
   const [showDetails, setShowDetails] = useState(false);
   const [deviceStatus, setDeviceStatus] = useState('This device');
   const [playerError, setPlayerError] = useState('');
@@ -601,7 +616,7 @@ export const PlayerProvider = ({ children }) => {
   const toggleAutoplay = useCallback(() => {
     setIsAutoplay(prev => {
       const next = !prev;
-      localStorage.setItem('vibetube-autoplay', String(next));
+      localStorage.setItem(AUTOPLAY_KEY, String(next));
       return next;
     });
   }, []);

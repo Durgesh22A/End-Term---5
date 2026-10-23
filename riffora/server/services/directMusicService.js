@@ -42,7 +42,7 @@ const fetchAllFtuTracks = async () => {
     const res = await axios.get(`${FTU_BASE_URL}/music/tracks/all`, {
       params: { limit: 50 },
       timeout: 10000,
-      headers: { Accept: 'application/json', 'User-Agent': 'VibeTube/1.0' },
+      headers: { Accept: 'application/json', 'User-Agent': 'RIFFORA/1.0' },
     });
     const rawTracks = Array.isArray(res.data?.data) ? res.data.data : [];
     const mapped = rawTracks

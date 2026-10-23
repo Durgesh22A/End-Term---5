@@ -9,7 +9,7 @@ const User = require('../models/User');
  */
 const protect = async (req, res, next) => {
   try {
-    let token = req.cookies?.vibetube_token;
+    let token = req.cookies?.riffora_token || req.cookies?.vibetube_token;
     if (!token && req.headers?.authorization?.startsWith('Bearer ')) {
       token = req.headers.authorization.split(' ')[1];
     }
@@ -42,7 +42,7 @@ const protect = async (req, res, next) => {
  */
 const optionalAuth = async (req, res, next) => {
   try {
-    let token = req.cookies?.vibetube_token;
+    let token = req.cookies?.riffora_token || req.cookies?.vibetube_token;
     if (!token && req.headers?.authorization?.startsWith('Bearer ')) {
       token = req.headers.authorization.split(' ')[1];
     }

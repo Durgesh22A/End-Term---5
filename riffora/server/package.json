@@ -1,7 +1,7 @@
 {
-  "name": "vibetube-server",
+  "name": "riffora-server",
   "version": "1.0.0",
-  "description": "VibeTube backend API",
+  "description": "RIFFORA backend API",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

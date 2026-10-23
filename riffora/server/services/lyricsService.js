@@ -147,7 +147,7 @@ const getLyrics = async (title, artist) => {
   if (cached && cached.expiresAt > Date.now()) return cached.value;
   if (cached) lyricsCache.delete(cacheKey);
 
-  const headers = { Accept: 'application/json', 'User-Agent': 'VibeTube/1.0 (https://github.com/vibetube)' };
+  const headers = { Accept: 'application/json', 'User-Agent': 'RIFFORA/1.0 (https://github.com/Durgesh22A/End-Term---5)' };
 
   // 1. Try exact lookup via /api/get if clean title & artist are found
   if (primaryTitle && primaryArtist && !isLabel) {
