@@ -52,6 +52,10 @@ app.use('/api/history', historyRoutes);
 app.use('/api/youtube', youtubeRoutes);
 app.use('/api/music', musicRoutes);
 
+// Serve the Vite build from the same Express app in production. On Vercel the
+// app is deployed as one function, so its frontend assets must be served here.
+app.use(express.static(path.join(__dirname, '../public')));
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });

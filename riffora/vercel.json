@@ -17,6 +17,6 @@
     { "source": "/playlist/:id", "destination": "/index.html" }
   ],
   "functions": {
-    "index.js": { "includeFiles": "public/index.html" }
+    "index.js": { "includeFiles": "public/**" }
   }
 }
