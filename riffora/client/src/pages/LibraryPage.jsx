@@ -49,7 +49,22 @@ const LibraryPage = () => {
           onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.borderColor = 'var(--border-hover)'; }}
           onMouseLeave={(e) => { e.currentTarget.style.transform = ''; e.currentTarget.style.borderColor = 'var(--border-color)'; }}
         >
-          <span style={{ fontSize:28 }}>❤️</span>
+          <span aria-hidden="true" style={{ display:'flex', width:36, height:36, flexShrink:0 }}>
+            <svg viewBox="0 0 48 48" role="presentation" style={{ width:'100%', height:'100%', filter:'drop-shadow(0 0 5px rgba(58, 240, 163, 0.25))' }}>
+              <defs>
+                <linearGradient id="library-liked-heart" x1="12" y1="10" x2="35" y2="35" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#caffdf" />
+                  <stop offset="0.5" stopColor="#43eba0" />
+                  <stop offset="1" stopColor="#18b978" />
+                </linearGradient>
+              </defs>
+              <path d="M24 34.5 10.5 22C5 17.8 5.5 10.5 12.4 8c4.5-1.6 9.4 0 11.6 3.8C26.2 8 31.1 6.4 35.6 8c6.9 2.5 7.4 9.8 1.9 14L24 34.5Z" fill="rgba(16, 50, 40, 0.52)" stroke="url(#library-liked-heart)" strokeWidth="3" strokeLinejoin="round" />
+              <g stroke="#b2ffda" strokeWidth="2.4" strokeLinecap="round" opacity="0.88">
+                <path d="M10 42v-4" /><path d="M15 42v-8" /><path d="M20 42v-5" /><path d="M25 42v-10" />
+                <path d="M30 42v-6" /><path d="M35 42v-9" /><path d="M40 42v-4" />
+              </g>
+            </svg>
+          </span>
           <div>
             <p style={{ fontWeight:600 }}>Liked Songs</p>
             <p style={{ fontSize:'0.75rem', color:'var(--text-muted)' }}>Your favorites</p>
@@ -60,7 +75,24 @@ const LibraryPage = () => {
           onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.borderColor = 'var(--border-hover)'; }}
           onMouseLeave={(e) => { e.currentTarget.style.transform = ''; e.currentTarget.style.borderColor = 'var(--border-color)'; }}
         >
-          <span style={{ fontSize:28 }}>🕐</span>
+          <span aria-hidden="true" style={{ display:'flex', width:36, height:36, flexShrink:0 }}>
+            <svg viewBox="0 0 48 48" role="presentation" style={{ width:'100%', height:'100%', filter:'drop-shadow(0 0 5px rgba(58, 240, 163, 0.25))' }}>
+              <defs>
+                <linearGradient id="library-history-ring" x1="10" y1="9" x2="38" y2="38" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#a7ffd4" />
+                  <stop offset="0.52" stopColor="#39e99a" />
+                  <stop offset="1" stopColor="#17b978" />
+                </linearGradient>
+              </defs>
+              <path d="M34.5 13.5A13.5 13.5 0 1 0 38 25" fill="none" stroke="url(#library-history-ring)" strokeWidth="3.4" strokeLinecap="round" />
+              <path d="M34.5 9v5.5H40" fill="none" stroke="#a7ffd4" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M24 16v8l5.7 3.5" fill="none" stroke="#c9ffe2" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+              <g stroke="#b2ffda" strokeWidth="2.4" strokeLinecap="round" opacity="0.88">
+                <path d="M10 42v-4" /><path d="M15 42v-8" /><path d="M20 42v-5" /><path d="M25 42v-10" />
+                <path d="M30 42v-6" /><path d="M35 42v-9" /><path d="M40 42v-4" />
+              </g>
+            </svg>
+          </span>
           <div>
             <p style={{ fontWeight:600 }}>Recently Played</p>
             <p style={{ fontSize:'0.75rem', color:'var(--text-muted)' }}>Your history</p>

@@ -50,8 +50,56 @@ const HistoryPage = () => {
   return (
     <div>
       <div className="playlist-header">
-        <div className="playlist-cover-placeholder" style={{ background:'linear-gradient(135deg, #374151, #1f2937)' }}>
-          <Clock size={60} color="rgba(255,255,255,0.5)" />
+        <div
+          className="playlist-cover-placeholder"
+          aria-hidden="true"
+          style={{
+            background: 'radial-gradient(circle at 24% 18%, rgba(89, 255, 186, 0.22), transparent 36%), linear-gradient(145deg, #162d28 0%, #10201d 48%, #172231 100%)',
+            boxShadow: 'inset 0 1px 0 rgba(209, 255, 231, 0.14), 0 18px 34px rgba(0, 0, 0, 0.32)',
+            overflow: 'hidden',
+          }}
+        >
+          <svg
+            viewBox="0 0 160 160"
+            role="presentation"
+            style={{ width: '82%', height: '82%', filter: 'drop-shadow(0 0 10px rgba(58, 240, 163, 0.28))' }}
+          >
+            <defs>
+              <linearGradient id="history-ring" x1="36" y1="31" x2="123" y2="125" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#a7ffd4" />
+                <stop offset="0.48" stopColor="#39e99a" />
+                <stop offset="1" stopColor="#17b978" />
+              </linearGradient>
+              <linearGradient id="history-wave" x1="36" y1="105" x2="126" y2="123" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#35e89b" stopOpacity="0.48" />
+                <stop offset="0.5" stopColor="#b2ffda" />
+                <stop offset="1" stopColor="#35e89b" stopOpacity="0.48" />
+              </linearGradient>
+              <filter id="history-glow" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="2.6" result="blur" />
+                <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+              </filter>
+            </defs>
+
+            <circle cx="80" cy="80" r="50" fill="none" stroke="rgba(175, 255, 215, 0.1)" strokeWidth="1" />
+            <path d="M111 50.5A43 43 0 1 0 121.5 85" fill="none" stroke="url(#history-ring)" strokeWidth="7" strokeLinecap="round" />
+            <path d="M110.5 39.5v14.5H125" fill="none" stroke="#a7ffd4" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+            <circle cx="80" cy="80" r="29" fill="rgba(8, 22, 20, 0.38)" stroke="rgba(178, 255, 218, 0.18)" />
+            <path d="M80 61v21l16 10" fill="none" stroke="#c9ffe2" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+            <circle cx="80" cy="80" r="4" fill="#c9ffe2" />
+
+            <g stroke="url(#history-wave)" strokeWidth="5" strokeLinecap="round" filter="url(#history-glow)">
+              <path d="M36 118v-10" />
+              <path d="M47 118v-20" />
+              <path d="M58 118v-31" />
+              <path d="M69 118v-17" />
+              <path d="M80 118v-25" />
+              <path d="M91 118v-39" />
+              <path d="M102 118v-23" />
+              <path d="M113 118v-14" />
+              <path d="M124 118v-26" />
+            </g>
+          </svg>
         </div>
         <div className="playlist-info">
           <p style={{ fontSize:'0.8rem', textTransform:'uppercase', letterSpacing:'0.1em', color:'var(--text-muted)' }}>History</p>
