@@ -3,6 +3,10 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+  build: {
+    outDir: '../public',
+    emptyOutDir: true,
+  },
   server: {
     port: 5173,
     // Proxy API calls to Express so we avoid CORS in development

@@ -5,14 +5,25 @@ const mongoose = require('mongoose');
  * We export this as a function so server/index.js calls it once at startup.
  * Mongoose automatically reconnects, so we don't need extra retry logic here.
  */
+let connectionPromise;
+
 const connectDB = async () => {
-  try {
-    const conn = await mongoose.connect(process.env.MONGO_URI);
-    console.log(`✅ MongoDB connected: ${conn.connection.host}`);
-  } catch (error) {
-    console.error(`❌ MongoDB connection failed: ${error.message}`);
-    process.exit(1); // Kill the server — no point running without a DB
+  if (mongoose.connection.readyState === 1) return mongoose.connection;
+  if (!process.env.MONGO_URI) throw new Error('MONGO_URI is not configured');
+
+  if (!connectionPromise) {
+    connectionPromise = mongoose.connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 10000 })
+      .then(({ connection }) => {
+        console.log(`✅ MongoDB connected: ${connection.host}`);
+        return connection;
+      })
+      .catch((error) => {
+        connectionPromise = null;
+        throw error;
+      });
   }
+
+  return connectionPromise;
 };
 
 module.exports = connectDB;

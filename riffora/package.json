@@ -1,0 +1,9 @@
+{
+  "name": "riffora-platform",
+  "private": true,
+  "main": "index.js",
+  "workspaces": ["client", "server"],
+  "scripts": {
+    "build": "npm run build --workspace riffora-client"
+  }
+}

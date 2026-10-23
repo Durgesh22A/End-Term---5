@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "installCommand": "npm install --include=dev",
+  "buildCommand": "npm run build",
+  "rewrites": [
+    { "source": "/login", "destination": "/index.html" },
+    { "source": "/register", "destination": "/index.html" },
+    { "source": "/search", "destination": "/index.html" },
+    { "source": "/library", "destination": "/index.html" },
+    { "source": "/playlists", "destination": "/index.html" },
+    { "source": "/liked", "destination": "/index.html" },
+    { "source": "/history", "destination": "/index.html" },
+    { "source": "/downloads", "destination": "/index.html" },
+    { "source": "/settings", "destination": "/index.html" },
+    { "source": "/artist/:name", "destination": "/index.html" },
+    { "source": "/album/:name", "destination": "/index.html" },
+    { "source": "/playlist/:id", "destination": "/index.html" }
+  ],
+  "functions": {
+    "index.js": { "includeFiles": "public/index.html" }
+  }
+}
